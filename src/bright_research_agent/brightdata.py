@@ -1,5 +1,6 @@
-import os
 import json
+import logging
+import os
 from typing import Any, Optional
 from urllib.parse import quote_plus
 
@@ -8,6 +9,7 @@ from agents import function_tool
 
 
 BRIGHT_DATA_REQUEST_URL = "https://api.brightdata.com/request"
+logger = logging.getLogger(__name__)
 
 
 class BrightDataConfigError(RuntimeError):
@@ -67,6 +69,12 @@ async def brightdata_serp_search(
     max_results: int = 5,
 ) -> dict[str, Any]:
     """Search Google through Bright Data SERP API and return top organic results."""
+    logger.info(
+        "Agent tool call: brightdata_serp_search query=%r country=%s max_results=%s",
+        query,
+        country or os.getenv("BRIGHT_DATA_COUNTRY", "us"),
+        max_results,
+    )
     return await serp_search_api(query, country=country, max_results=max_results)
 
 
@@ -90,8 +98,14 @@ async def serp_search_api(
         "data_format": "parsed_light",
     }
 
+    logger.info("Bright Data SERP request: country=%s query=%r", token_country, query)
     async with httpx.AsyncClient(timeout=60) as client:
         response = await client.post(BRIGHT_DATA_REQUEST_URL, headers=_headers(), json=payload)
+        logger.info(
+            "Bright Data SERP response: status=%s bytes=%s",
+            response.status_code,
+            len(response.content),
+        )
         _raise_for_brightdata_error(response)
         data = _unwrap_body_json(response.json())
 
@@ -108,6 +122,11 @@ async def serp_search_api(
             }
         )
 
+    logger.info(
+        "Surfaced SERP results: returned=%s available=%s",
+        len(results),
+        len(organic),
+    )
     return {
         "query": query,
         "country": token_country,
@@ -123,6 +142,12 @@ async def brightdata_unlock_url(
     max_chars: int = 12000,
 ) -> dict[str, Any]:
     """Fetch a public webpage through Bright Data Unlocker API as clean markdown."""
+    logger.info(
+        "Agent tool call: brightdata_unlock_url url=%s country=%s max_chars=%s",
+        url,
+        country or os.getenv("BRIGHT_DATA_COUNTRY", "us"),
+        max_chars,
+    )
     return await unlock_url_api(url, country=country, max_chars=max_chars)
 
 
@@ -142,15 +167,29 @@ async def unlock_url_api(
         "data_format": "markdown",
     }
 
+    logger.info("Bright Data Unlocker request: country=%s url=%s", token_country, url)
     async with httpx.AsyncClient(timeout=90) as client:
         response = await client.post(BRIGHT_DATA_REQUEST_URL, headers=_headers(), json=payload)
+        logger.info(
+            "Bright Data Unlocker response: status=%s bytes=%s url=%s",
+            response.status_code,
+            len(response.content),
+            url,
+        )
         _raise_for_brightdata_error(response)
         data = response.json()
 
     body = data.get("body", data)
+    content = _trim_text(body, max(1000, min(max_chars, 50000)))
+    logger.info(
+        "Surfaced page content: url=%s status_code=%s chars=%s",
+        url,
+        data.get("status_code"),
+        len(content),
+    )
     return {
         "url": url,
         "country": token_country,
         "status_code": data.get("status_code"),
-        "content": _trim_text(body, max(1000, min(max_chars, 50000))),
+        "content": content,
     }

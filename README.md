@@ -29,6 +29,16 @@ python -m bright_research_agent.agent \
   "What is the market positioning of Perplexity's enterprise search product?"
 ```
 
+Progress and tool-call logs are written to stderr so stdout remains valid JSON:
+
+```bash
+python -m bright_research_agent.agent \
+  "What is the market positioning of Perplexity's enterprise search product?" \
+  --log-level INFO
+```
+
+Set `--log-level WARNING` or `LOG_LEVEL=WARNING` for quieter output.
+
 If the OpenAI request times out, give the model call more room and reduce turns:
 
 ```bash
