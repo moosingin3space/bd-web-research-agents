@@ -1,0 +1,33 @@
+organizations:
+  - name: OpenAI
+    aliases: ["OpenAI"]
+    domains: ["openai.com"]
+  - name: Anthropic
+    aliases: ["Anthropic"]
+    domains: ["anthropic.com"]
+  - name: xAI
+    aliases: ["xAI", "x.ai"]
+    domains: ["x.ai"]
+  - name: Perplexity
+    aliases: ["Perplexity", "Perplexity AI"]
+    domains: ["perplexity.ai"]
+  - name: Cursor
+    aliases: ["Cursor", "Anysphere"]
+    domains: ["cursor.com", "cursor.sh"]
+  - name: Mistral
+    aliases: ["Mistral", "Mistral AI"]
+    domains: ["mistral.ai"]
+  - name: Cognition
+    aliases: ["Cognition", "Cognition AI", "Cognition Labs"]
+    domains: ["cognition.ai"]
+
+source_bias:
+  - linkedin.com
+  - techcrunch.com
+  - theinformation.com
+  - bloomberg.com
+  - reuters.com
+  - theverge.com
+  - ft.com
+  - wsj.com
+  - wired.com
