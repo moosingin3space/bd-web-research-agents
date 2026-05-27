@@ -250,6 +250,15 @@ Rules:
   rather than filled. A job listing is not a movement.
 - `organization` must be exactly "{org_name}".
 - `movement_type` must be "personnel".
+- `person_name` must be set to the individual's full name as stated in the
+  evidence. Do not emit a movement if you cannot name the specific person.
+- `from_organization` is the org the person came from. Use the company's
+  proper name (e.g. "Tesla", "Google DeepMind", "OpenAI"). Leave it null
+  if the evidence does not state where they came from.
+- `to_organization` is the org the person is going to. For a hire INTO
+  {org_name}, set this to "{org_name}". For a departure FROM {org_name}
+  where the next destination is named, set it to that destination. Leave
+  null if not stated.
 - `surfaced_in` = tightest bucket the supporting URL was found in. Each page
   in the evidence bundle has a `surfaced_in` annotation showing its bucket;
   use the tightest bucket of all citing URLs.
@@ -291,14 +300,18 @@ Inputs (provided in the user message as JSON):
 Tasks:
 1. Merge cross-org duplicates (same person moving between two watchlist orgs
    shows up under both — keep one Movement; pick the destination org as
-   `organization`; name the source org in `summary`). Merge citations.
+   `organization`; populate `from_organization` and `to_organization`
+   correctly; name the source org in `summary` for context). Merge citations.
 2. Sort all movements by `interestingness` desc; break ties with bucket order
    breaking > recent > context.
 3. `zero_movement_orgs`: list orgs in `organizations_checked` that produced
    zero movements after merging AND are not already in `coverage_gaps`.
 4. Pass through `coverage_gaps` unchanged.
 5. Preserve every field on each Movement; do not invent citations.
-6. Drop any input movement whose `movement_type` is not "personnel".
+   Specifically: keep `person_name`, `from_organization`, `to_organization`
+   exactly as the sub-agent set them unless you are merging duplicates.
+6. Drop any input movement whose `movement_type` is not "personnel" or
+   that has no `person_name`.
 
 Output the full MovementReport JSON.
 """
@@ -368,7 +381,7 @@ def _enforce_single_source_low_confidence(movements: list[Movement]) -> None:
 
 
 def _drop_non_personnel(movements: list[Movement]) -> list[Movement]:
-    return [m for m in movements if m.movement_type == "personnel"]
+    return [m for m in movements if m.movement_type == "personnel" and m.person_name]
 
 
 async def run_movements(

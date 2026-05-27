@@ -46,6 +46,24 @@ class Movement(BaseModel):
     movement_type: MovementType
     headline: str
     summary: str
+    person_name: Optional[str] = Field(
+        default=None,
+        description="Named individual involved in a personnel movement, if any.",
+    )
+    from_organization: Optional[str] = Field(
+        default=None,
+        description=(
+            "Source organization the person came from. May be a watchlist org "
+            "or any external company. None if not stated in evidence."
+        ),
+    )
+    to_organization: Optional[str] = Field(
+        default=None,
+        description=(
+            "Destination organization the person is going to. May be a "
+            "watchlist org or any external company. None if not stated."
+        ),
+    )
     occurred_on: Optional[str] = Field(
         default=None, description="ISO date or 'around YYYY-MM'."
     )

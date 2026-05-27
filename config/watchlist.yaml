@@ -20,6 +20,9 @@ organizations:
   - name: Cognition
     aliases: ["Cognition", "Cognition AI", "Cognition Labs"]
     domains: ["cognition.ai"]
+  - name: Google
+    aliases: ["Google", "DeepMind"]
+    domains: ["google.com", "gemini.google.com"]
 
 source_bias:
   - linkedin.com
