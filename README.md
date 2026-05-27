@@ -50,13 +50,14 @@ python -m bright_research_agent.agent \
 
 The final output is JSON matching the Pydantic schema in `src/bright_research_agent/schemas.py`.
 
-## Movements Discovery
+## Personnel Movements Discovery
 
-A second entry point runs a discovery workflow across a fixed watchlist of AI labs
-and startups (OpenAI, Anthropic, xAI, Perplexity, Cursor, Mistral, Cognition).
-It surfaces notable movements (personnel, product, funding, M&A, research,
-org change, partnership, regulatory) over three nested recency buckets
-(`breaking` 7d / `recent` 30d / `context` 90d) and emits a Markdown report.
+A second entry point runs a discovery workflow across a fixed watchlist of AI
+labs and startups (OpenAI, Anthropic, xAI, Perplexity, Cursor, Mistral,
+Cognition). It surfaces notable senior personnel movements — hires,
+departures, founder exits, exec reshuffles — over three nested recency
+buckets (`breaking` 7d / `recent` 30d / `context` 90d) and emits a Markdown
+report.
 
 ```bash
 python -m bright_research_agent.movements \

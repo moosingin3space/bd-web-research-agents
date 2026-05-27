@@ -39,7 +39,7 @@ def render_markdown(report: MovementReport) -> str:
     )
 
     out: list[str] = []
-    out.append(f"# Tech Movements Report — {report.run_date}")
+    out.append(f"# Tech Personnel Movements Report — {report.run_date}")
     out.append("")
     out.append(
         f"_Buckets: {bucket_summary}. {len(report.organizations_checked)} "
