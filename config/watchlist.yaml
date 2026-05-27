@@ -23,6 +23,9 @@ organizations:
   - name: Google
     aliases: ["Google", "DeepMind"]
     domains: ["google.com", "gemini.google.com"]
+  - name: Deepseek
+    aliases: ["Deepseek"]
+    domains: ["deepseek.com"]
 
 source_bias:
   - linkedin.com
