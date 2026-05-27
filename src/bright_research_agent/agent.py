@@ -102,11 +102,9 @@ async def run_research(question: str, max_turns: int) -> ResearchReport:
 async def collect_evidence(question: str, max_sources: int = 3) -> dict[str, Any]:
     logger.info("Collecting initial evidence: max_sources=%s", max_sources)
     search = await serp_search_api(question, max_results=max_sources)
-    urls = [
-        result["url"]
-        for result in search.get("results", [])
-        if result.get("url")
-    ][:max_sources]
+    urls = [result["url"] for result in search.get("results", []) if result.get("url")][
+        :max_sources
+    ]
     logger.info("Selected URLs for page retrieval: count=%s urls=%s", len(urls), urls)
     pages = await asyncio.gather(
         *(unlock_url_api(url, max_chars=7000) for url in urls),

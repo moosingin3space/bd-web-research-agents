@@ -100,7 +100,9 @@ async def serp_search_api(
 
     logger.info("Bright Data SERP request: country=%s query=%r", token_country, query)
     async with httpx.AsyncClient(timeout=60) as client:
-        response = await client.post(BRIGHT_DATA_REQUEST_URL, headers=_headers(), json=payload)
+        response = await client.post(
+            BRIGHT_DATA_REQUEST_URL, headers=_headers(), json=payload
+        )
         logger.info(
             "Bright Data SERP response: status=%s bytes=%s",
             response.status_code,
@@ -169,7 +171,9 @@ async def unlock_url_api(
 
     logger.info("Bright Data Unlocker request: country=%s url=%s", token_country, url)
     async with httpx.AsyncClient(timeout=90) as client:
-        response = await client.post(BRIGHT_DATA_REQUEST_URL, headers=_headers(), json=payload)
+        response = await client.post(
+            BRIGHT_DATA_REQUEST_URL, headers=_headers(), json=payload
+        )
         logger.info(
             "Bright Data Unlocker response: status=%s bytes=%s url=%s",
             response.status_code,
